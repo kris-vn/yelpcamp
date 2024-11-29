@@ -29,9 +29,8 @@ const User = require('./models/user.js')
 const app = express()
 const db = mongoose.connection
 
-// const dbUrl = process.env.DB_URL
-const dbUrl = 'mongodb://localhost:27017/yelp-camp'
-// 'mongodb://localhost:27017/yelp-camp'
+
+const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp'
 mongoose.connect(dbUrl)
 
 db.on('error', console.error.bind(console, 'connection error:'))
@@ -49,17 +48,13 @@ app.use(methodOverride('_method'))
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(mongoSanitize())
 
-
-// app.use(session({
-//     secret: 'foo',
-//     store: MongoStore.create(options)
-//   }))
+const secret = process.env.SECRET || 'thisshouldbeabettersecret'
 
 const store = MongoStore.create({
     mongoUrl: dbUrl,
     touchAfter: 24 * 60 * 60,
     crypto: {
-        secret: 'thisshouldbeabettersecret'
+        secret
     }
 })
 
@@ -70,7 +65,7 @@ store.on('error', function (err) {
 const sessionConfig = {
     store,
     name: 'session',
-    secret: 'thisshouldbeabettersecret',
+    secret,
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -174,6 +169,7 @@ app.use((err, req, res, next) => {
 })
 
 
-app.listen(3000, () => {
-    console.log('Serving on port 3000')
+const port = process.env.PORT || 3000
+app.listen(port, () => {
+    console.log(`Serving on port ${port}`)
 })
