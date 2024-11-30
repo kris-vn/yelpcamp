@@ -34,8 +34,12 @@
 
     <main class="px-3 m-auto">
       <h1>YelpCamp</h1>
+      <% if (!currentUser) { %>
       <p class="lead">Jump right in and explore our many campgrounds</p>
+      <a href="/register" class="btn btn-lg btn-secondary font-weight-bold bg-white">Sign Up</a>
+      <% } else { %>
       <a href="/campgrounds" class="btn btn-lg btn-secondary font-weight-bold bg-white">View Campgrounds</a>
+      <% } %>
     </main>
 
     <footer class="mt-auto text-white-50">
